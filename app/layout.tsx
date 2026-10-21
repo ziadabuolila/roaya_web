@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MotionEnhancer from "@/components/MotionEnhancer";
+import NavigationProgress from "@/components/NavigationProgress";
 import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
@@ -19,16 +20,39 @@ export const metadata: Metadata = {
     locale: "ar_EG",
     type: "website",
   },
+  icons: {
+    icon: "/images/logo_roaya.png",
+    shortcut: "/images/logo_roaya.png",
+    apple: "/images/logo_roaya.png",
+  },
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="ar" dir="rtl" suppressHydrationWarning>
+    <html lang="ar" dir="rtl" data-scroll-behavior="smooth" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function () {
+            try {
+              var savedTheme = localStorage.getItem("roaya-theme");
+              var initialTheme = savedTheme === "dark" || savedTheme === "light"
+                ? savedTheme
+                : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+              document.documentElement.dataset.theme = initialTheme;
+            } catch (_) {
+              document.documentElement.dataset.theme = "light";
+            }
+          })();`,
+          }}
+        />
+      </head>
       <body>
         <ThemeProvider>
           <MotionEnhancer />
+          <NavigationProgress />
           <Header />
           {children}
           <Footer />

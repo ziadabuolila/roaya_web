@@ -13,31 +13,37 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>("light");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("roaya-theme") as Theme | null;
+    let initialTheme = document.documentElement.dataset.theme;
+    if (initialTheme !== "dark" && initialTheme !== "light") {
+      try {
+        initialTheme = localStorage.getItem("roaya-theme") ?? "";
+      } catch {
+        // Fall back to the system preference when storage is unavailable.
+      }
+    }
     const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
-    setTheme(initialTheme);
-    document.documentElement.dataset.theme = initialTheme;
-    setMounted(true);
+    const resolvedTheme: Theme =
+      initialTheme === "dark" || initialTheme === "light"
+        ? initialTheme
+        : prefersDark
+          ? "dark"
+          : "light";
+    setTheme(resolvedTheme);
+    document.documentElement.dataset.theme = resolvedTheme;
   }, []);
-
-  useEffect(() => {
-    document.documentElement.dataset.theme = theme;
-  }, [theme]);
 
   const toggleTheme = () => {
     const newTheme = theme === "light" ? "dark" : "light";
     setTheme(newTheme);
     document.documentElement.dataset.theme = newTheme;
-    localStorage.setItem("roaya-theme", newTheme);
+    try {
+      localStorage.setItem("roaya-theme", newTheme);
+    } catch {
+      // Keep the current session usable when storage is unavailable.
+    }
   };
-
-  if (!mounted) {
-    return null;
-  }
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>

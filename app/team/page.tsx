@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { PageHero, CTA } from "@/components/Sections";
+import TeamMemberImage from "@/components/TeamMemberImage";
 import {
   BriefcaseBusiness,
   Code2,
@@ -54,17 +55,7 @@ const teamMembers = [
     facebook: "https://www.facebook.com/share/18n25Y83j9/",
     linkedin: "https://www.linkedin.com/in/emad-abuolila-76a744252",
     email: "emad.abuolila@gmail.com",
-  },
-  {
-    name: "رامي سليم",
-    position: "قسم مبيعات",
-    image: "/images/sales/ramy.jpeg",
-    phone: "01100203820",
-    whatsapp: "https://wa.me/201100203820",
-    facebook: "https://www.facebook.com/share/19Z21vzewx/",
-    linkedin: "https://www.linkedin.com/in/ramy-atef-244b00149?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app",
-    email: "ramyseliem12@gmail.com",
-  },
+  },  
 ];
 
 export default function Team() {
@@ -137,13 +128,7 @@ export default function Team() {
               <article className="team-member-card" key={member.name}>
                 <div className="member-header">
                   <div className="member-image-container">
-                    <div className="member-image-wrapper">
-                      <img
-                        src={member.image}
-                        alt={member.name}
-                        className="member-image"
-                      />
-                    </div>
+                    <TeamMemberImage src={member.image} alt={member.name} />
                   </div>
                 </div>
 

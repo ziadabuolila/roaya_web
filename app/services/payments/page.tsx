@@ -1,40 +1,25 @@
+import Image from "next/image";
 import type { Metadata } from "next";
 import { PageHero, CTA } from "@/components/Sections";
-import { CreditCard, ArrowUpLeft, ShieldCheck, Smartphone, ReceiptText } from "lucide-react";
 
 export const metadata: Metadata = { title: "حلول الدفع الإلكتروني" };
 
 const paymentServices = [
-  [
-    "بوابات الدفع الإلكتروني",
-    "دعم متعدد لقنوات الدفع الرقمية عبر المنصات المتنوعة.",
-  ],
-  [
-    "نقاط البيع والتحصيل",
-    "أدوات تساعد على استقبال المدفوعات وتنظيم عمليات التحصيل بكفاءة.",
-  ],
-  [
-    "سداد الفواتير والخدمات",
-    "تجربة أكثر سهولة للوصول إلى مجموعة من خدمات السداد المتنوعة.",
-  ],
-  [
-    "تكامل قنوات الدفع",
-    "مناقشة احتياجات الربط مع الأنظمة والمنصات ذات الصلة لتسهيل العمليات.",
-  ],
+  { title: "فواتير الاتصالات", desc: "اشحن رصيدك وادفع فواتير هاتفك والإنترنت بكل سهولة متاح لكل مشغلي الشبكات في مصر .", image: "1.png" },
+  { title: "المرافق", desc: "ادفع فواتير الكهرباء والمياه والغاز دون انتظار شركات متعددة متاحة عبر التطبيق .", image: "2.png" },
+  { title: "التأمينات", desc: "سدد أقساطك لدى أفضل شركات التأمين بسهولة مصر لتأمينات الحياة، أليانز، أكسا، وغيرها .", image: "3.png" },
+  { title: "النقابات", desc: "سدد اشتراكات النقابات المهنية من منزلك المهندسين، الأطباء، البيطريين وغيرهم .", image: "4.png" },
+  { title: "التعليم", desc: "سداد رسوم المدارس والجامعات بسهولة وأمان أكثر من 40 جامعة ومؤسسة تعليمية .", image: "5.png" },
+  { title: "التبرعات", desc: "تبرع للجهات الخيرية بكل سهولة وأمان مصر الخير، بنك الطعام، 57357 وغيرهم .", image: "6.png" },
+  { title: "التذاكر", desc: "احجز وسدد ثمن تذاكر الطيران، الباص، السينما بسهولة مصر للطيران، جو باص، السينمات وأكثر .", image: "7.png" },
+  { title: "العقارات", desc: "سدد أقساطك العقارية بكل أمان عبر التطبيق بالم هيلز، مارينا، لا فيستا، والمزيد .", image: "8.png" },
+  { title: "الالتزامات المالية", desc: "سدد أقساطك البنكية بلمسة زر ValU ، Contact ، MoneyFellows بنك الإسكندرية وأكثر .", image: "9.png" },
+  { title: "المدفوعات عبر الانترنت", desc: "سدد مشترياتك بكل سهولة عبر الانترنت سويفل، بي تك، طلبات، أوليكس وغيرهم .", image: "10.png" },
+  { title: "اشتراكات النوادي", desc: "جدد اشتراك ناديك بسرعة وسهولة الجزيرة، الصيد، دجلة، سوديك والمزيد .", image: "11.png" },
+  { title: "غرامات المرور", desc: "ادفع غراماتك واطلب رخصتك أونلاين بكل سهولة .", image: "12.png" },
+  { title: "الخدمة العسكرية", desc: "احصل على تصاريح السفر وشهادات الإعفاء بسهولة .", image: "13.png" },
+  { title: "الرقم المرجعي من فوري باى", desc: "ادفع برقمك المرجعي بكل سهولة عبر تطبيقنا .", image: "14.png" },
 ];
-
-function ServiceRow({ title, desc, index }: { title: string; desc: string; index: number }) {
-  return (
-    <div className="service-row">
-      <span className="service-row-num">0{index + 1}</span>
-      <div className="service-row-content">
-        <h3>{title}</h3>
-        <p>{desc}</p>
-      </div>
-      <ArrowUpLeft size={18} className="service-row-arrow" />
-    </div>
-  );
-}
 
 export default function PaymentsPage() {
   return (
@@ -46,45 +31,37 @@ export default function PaymentsPage() {
         desc="حلول تساعد على جعل رحلة الدفع أكثر سلاسة، مع مراعاة متطلبات النشاط وتجربة المستخدم."
         number="01"
       />
-      <section className="section">
+      <section className="section payment-services-section">
         <div className="container">
-          <div className="service-detail-page">
-            <div className="service-page-icon">
-              <CreditCard size={40} />
-            </div>
-            <h2>حلول الدفع المتكاملة</h2>
-            <p>
-              نقدم مجموعة من حلول الدفع الإلكتروني التي تساعد الأفراد والشركات على
-              استقبال المدفوعات وإدارة عمليات التحصيل بكفاءة وأمان.
-            </p>
-            <div className="service-rows-list">
-              {paymentServices.map(([title, desc], index) => (
-                <ServiceRow key={title} title={title} desc={desc} index={index} />
-              ))}
-            </div>
-            <div className="service-features">
-              <div className="feature-item">
-                <ShieldCheck size={24} />
-                <div>
-                  <h3>أمان عالي</h3>
-                  <p>تشفير البيانات وحماية المعاملات المالية</p>
+          <div className="payment-services-heading">
+            <span>حلول متنوعة</span>
+            <h2>خدمات دفع تناسب احتياجاتك</h2>
+            <p>مرّر على الخدمة لاستكشاف المزيد عنها.</p>
+          </div>
+          <div className="payment-services-cards">
+            {paymentServices.map((service, index) => (
+              <article className="payment-service-card" key={service.image} tabIndex={0}>
+                <div className="payment-service-front">
+                  <span className="payment-service-number">{String(index + 1).padStart(2, "0")}</span>
+                  <div className="payment-service-image">
+                    <Image
+                      src={`/images/s_img/section_2/${service.image}`}
+                      alt=""
+                      width={112}
+                      height={112}
+                      sizes="112px"
+                    />
+                  </div>
+                  <h3>{service.title}</h3>
+                  <span className="payment-service-hint" aria-hidden="true">↗</span>
                 </div>
-              </div>
-              <div className="feature-item">
-                <Smartphone size={24} />
-                <div>
-                  <h3>سهولة الاستخدام</h3>
-                  <p>تجربة دفع سلسة وسريعة للمستخدمين</p>
+                <div className="payment-service-reveal">
+                  <span>اكتشف الخدمة</span>
+                  <p>{service.desc}</p>
+                  <i aria-hidden="true">↗</i>
                 </div>
-              </div>
-              <div className="feature-item">
-                <ReceiptText size={24} />
-                <div>
-                  <h3>تقارير مفصلة</h3>
-                  <p>متابعة المعاملات والإحصائيات في الوقت الفعلي</p>
-                </div>
-              </div>
-            </div>
+              </article>
+            ))}
           </div>
         </div>
       </section>

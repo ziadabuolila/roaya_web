@@ -37,12 +37,18 @@ export default function Home() {
               <span className="live-dot" /> حلول السداد والبرمجيات{" "}
               <span className="kicker-line" />
             </div>
-            <h1>
-              المستقبل الرقمي
+            <h1 className="home-hero-title">
+              <span className="home-hero-line">
+                <span className="hero-word word-1">المستقبل</span>{" "}
+                <span className="hero-word word-2">الرقمي</span>
+              </span>
               <br />
-              يبدأ من{" "}
+              <span className="home-hero-line">
+                <span className="hero-word word-3">يبدأ</span>{" "}
+                <span className="hero-word word-4">من</span>{" "}
               <span className="hero-highlight">
-                رؤية مختلفة
+                  <span className="hero-word word-5">رؤية</span>{" "}
+                  <span className="hero-word word-6">مختلفة</span>
                 <svg
                   viewBox="0 0 310 18"
                   preserveAspectRatio="none"
@@ -50,6 +56,7 @@ export default function Home() {
                 >
                   <path d="M3 13 C70 1, 190 3, 306 10" />
                 </svg>
+              </span>
               </span>
             </h1>
             <p className="hero-desc">

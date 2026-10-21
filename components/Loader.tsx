@@ -5,33 +5,41 @@ export default function Loader() {
   const [animationComplete, setAnimationComplete] = useState(false);
 
   useEffect(() => {
+    const stopPageScroll = (event: KeyboardEvent) => {
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable ||
+          ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
+      ) {
+        return;
+      }
+
+      if (
+        ["ArrowUp", "ArrowDown", "PageUp", "PageDown", "Home", "End", " "].includes(
+          event.key,
+        )
+      ) {
+        event.preventDefault();
+      }
+    };
+
+    document.addEventListener("keydown", stopPageScroll);
     const timer = setTimeout(() => {
       setAnimationComplete(true);
     }, 2500);
 
     const hideTimer = setTimeout(() => {
+      document.documentElement.classList.add("intro-ready");
       setShowLoader(false);
     }, 3000);
 
     return () => {
       clearTimeout(timer);
       clearTimeout(hideTimer);
+      document.removeEventListener("keydown", stopPageScroll);
     };
   }, []);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (showLoader) {
-      root.style.overflow = "hidden";
-      document.body.style.overflow = "hidden";
-      return () => {
-        root.style.overflow = "";
-        document.body.style.overflow = "";
-      };
-    }
-    root.style.overflow = "";
-    document.body.style.overflow = "";
-  }, [showLoader]);
 
   if (!showLoader) return null;
 
@@ -69,6 +77,7 @@ export default function Loader() {
             />
           </div>
         </div>
+        <p className="loader-tagline">مع رؤية باي مدفوعاتك في أمان</p>
       </div>
     </div>
   );

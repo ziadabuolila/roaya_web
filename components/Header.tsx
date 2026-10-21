@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Sun,
   Moon,
@@ -14,12 +14,12 @@ import {
   HelpCircle,
   AlertCircle,
   MessageSquare,
-  X,
-  Menu,
   CreditCard,
   Network,
+  ChevronDown,
 } from "lucide-react";
 import { useTheme } from "./ThemeProvider";
+import MobileMenu from "./MobileMenu";
 
 const links = [
   { href: "/", label: "الرئيسية", icon: Home },
@@ -53,29 +53,30 @@ const serviceLinks = [
 
 export default function Header() {
   const path = usePathname();
-  const { theme, toggleTheme } = useTheme();
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  const toggleMobileMenu = () => {
-    setMobileMenuOpen(!mobileMenuOpen);
-    if (!mobileMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-  };
+  const { toggleTheme } = useTheme();
+  const [servicesOpen, setServicesOpen] = useState(false);
+  const servicesMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const mq = window.matchMedia("(max-width: 1400px)");
-    const onChange = () => {
-      if (!mq.matches) {
-        setMobileMenuOpen(false);
-        document.body.style.overflow = "";
+    const handlePointerDown = (event: PointerEvent) => {
+      if (
+        servicesMenuRef.current &&
+        !servicesMenuRef.current.contains(event.target as Node)
+      ) {
+        setServicesOpen(false);
       }
     };
-    onChange();
-    mq.addEventListener("change", onChange);
-    return () => mq.removeEventListener("change", onChange);
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setServicesOpen(false);
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   return (
@@ -108,16 +109,41 @@ export default function Header() {
                 <span className="nav-label">{l.label}</span>
               </Link>
             ))}
-            {serviceLinks.map((l) => (
-              <Link
-                key={l.href}
-                href={l.href}
-                className={path === l.href ? "active" : ""}
+            <div className="nav-dropdown" ref={servicesMenuRef}>
+              <button
+                type="button"
+                className={`dropdown-toggle ${servicesOpen ? "is-open" : ""} ${serviceLinks.some((l) => path === l.href || path.startsWith(`${l.href}/`)) ? "active" : ""}`}
+                onClick={() => setServicesOpen((open) => !open)}
+                aria-expanded={servicesOpen}
+                aria-controls="header-services-menu"
               >
-                {path === l.href && <l.icon size={20} className="nav-icon" />}
-                <span className="nav-label">{l.label}</span>
-              </Link>
-            ))}
+                <span>خدماتنا</span>
+                <ChevronDown size={15} className="dropdown-arrow" aria-hidden="true" />
+              </button>
+              <div
+                id="header-services-menu"
+                className={`dropdown-menu ${servicesOpen ? "is-open" : ""}`}
+                aria-hidden={!servicesOpen}
+                inert={!servicesOpen}
+              >
+                {serviceLinks.map((l) => {
+                  const Icon = l.icon;
+                  const active = path === l.href || path.startsWith(`${l.href}/`);
+                  return (
+                    <Link
+                      key={l.href}
+                      href={l.href}
+                      className={active ? "active" : ""}
+                      onClick={() => setServicesOpen(false)}
+                      tabIndex={servicesOpen ? 0 : -1}
+                    >
+                      <Icon size={16} aria-hidden="true" />
+                      <span>{l.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
             {links.slice(4).map((l) => (
               <Link
                 key={l.href}
@@ -133,134 +159,15 @@ export default function Header() {
             className="theme-toggle"
             type="button"
             onClick={toggleTheme}
-            aria-label={theme === "dark" ? "تفعيل الوضع الفاتح" : "تفعيل الوضع الداكن"}
-            title={theme === "dark" ? "الوضع الفاتح" : "الوضع الداكن"}
+            aria-label="تغيير وضع العرض"
+            title="تغيير وضع العرض"
           >
-            {theme === "dark" ? <Sun size={17} /> : <Moon size={17} />}
+            <Sun size={17} className="theme-icon-sun" aria-hidden="true" />
+            <Moon size={17} className="theme-icon-moon" aria-hidden="true" />
           </button>
-          <button
-            type="button"
-            className={`mobile-menu-trigger ${mobileMenuOpen ? "is-active" : ""}`}
-            onClick={toggleMobileMenu}
-            aria-label={mobileMenuOpen ? "إغلاق القائمة" : "فتح القائمة"}
-            aria-expanded={mobileMenuOpen}
-            aria-controls="mobile-menu-panel"
-          >
-            {mobileMenuOpen ? <X size={23} /> : <Menu size={23} />}
-          </button>
+          {path !== "/menu" && <MobileMenu />}
         </div>
       </header>
-
-      {mobileMenuOpen && (
-        <>
-          <button
-            type="button"
-            className={`mobile-backdrop ${mobileMenuOpen ? "is-visible" : ""}`}
-            onClick={toggleMobileMenu}
-            aria-label="إغلاق القائمة"
-            tabIndex={mobileMenuOpen ? 0 : -1}
-            aria-hidden={!mobileMenuOpen}
-          />
-          <nav
-            id="mobile-menu-panel"
-            className={`mobile-menu-nav ${mobileMenuOpen ? "is-open" : ""}`}
-            aria-label="التنقل الرئيسي"
-            aria-hidden={!mobileMenuOpen}
-            dir="rtl"
-            inert={!mobileMenuOpen}
-          >
-            <div className="mobile-nav-header">
-              <Link
-                className="brand"
-                href="/"
-                onClick={toggleMobileMenu}
-                tabIndex={mobileMenuOpen ? 0 : -1}
-              >
-                <span className="brand-symbol">
-                  <img
-                    src="/images/logo_roaya.png"
-                    alt="رؤية باي"
-                    className="brand-logo"
-                  />
-                </span>
-                <span className="brand-copy">
-                  <b>
-                    رؤية <i>باي</i>
-                  </b>
-                  <small>حلول السداد والبرمجيات</small>
-                </span>
-              </Link>
-              <button
-                type="button"
-                className="mobile-close-btn"
-                onClick={toggleMobileMenu}
-                aria-label="إغلاق القائمة"
-                tabIndex={mobileMenuOpen ? 0 : -1}
-              >
-                <X size={22} />
-              </button>
-            </div>
-            <div className="mobile-nav-content">
-              {links.slice(0, 4).map((l) => {
-                const Icon = l.icon;
-                const active =
-                  path === l.href ||
-                  (l.href !== "/" && path.startsWith(`${l.href}/`));
-
-                return (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    className={`mobile-nav-link ${active ? "active" : ""}`}
-                    onClick={toggleMobileMenu}
-                    tabIndex={mobileMenuOpen ? 0 : -1}
-                  >
-                    <Icon size={20} className="menu-nav-icon" />
-                    <span className="menu-nav-label">{l.label}</span>
-                  </Link>
-                );
-              })}
-              {serviceLinks.map((l) => {
-                const Icon = l.icon;
-                const active =
-                  path === l.href || path.startsWith(`${l.href}/`);
-
-                return (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    className={`mobile-nav-link ${active ? "active" : ""}`}
-                    onClick={toggleMobileMenu}
-                    tabIndex={mobileMenuOpen ? 0 : -1}
-                  >
-                    <Icon size={20} className="menu-nav-icon" />
-                    <span className="menu-nav-label">{l.label}</span>
-                  </Link>
-                );
-              })}
-              {links.slice(4).map((l) => {
-                const Icon = l.icon;
-                const active =
-                  path === l.href ||
-                  (l.href !== "/" && path.startsWith(`${l.href}/`));
-
-                return (
-                  <Link
-                    key={l.href}
-                    href={l.href}
-                    className={`mobile-nav-link ${active ? "active" : ""}`}
-                    onClick={toggleMobileMenu}
-                    tabIndex={mobileMenuOpen ? 0 : -1}
-                  >
-                    <Icon size={20} className="menu-nav-icon" />
-                    <span className="menu-nav-label">{l.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
-          </nav>
-        </>
-      )}
     </>
   );
 }
