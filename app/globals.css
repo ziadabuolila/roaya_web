@@ -7061,6 +7061,76 @@ html.intro-ready .home-hero-title .hero-highlight svg path {
   transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
 }
 
+.roaya-chat-welcome {
+  position: absolute;
+  right: 76px;
+  bottom: 7px;
+  display: flex;
+  min-width: 232px;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 14px;
+  border: 1px solid rgba(69, 132, 75, 0.18);
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 0 8px 28px rgba(21, 48, 29, 0.13), 0 2px 6px rgba(21, 48, 29, 0.06);
+  color: var(--ink);
+  cursor: pointer;
+  text-align: right;
+  animation: roaya-chat-welcome-enter 0.45s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.roaya-chat-welcome::after {
+  position: absolute;
+  top: 50%;
+  right: -6px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid rgba(69, 132, 75, 0.18);
+  border-right: 1px solid rgba(69, 132, 75, 0.18);
+  background: var(--white);
+  content: "";
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.roaya-chat-welcome:hover {
+  transform: translateY(-2px);
+  border-color: rgba(69, 132, 75, 0.34);
+  box-shadow: 0 12px 32px rgba(21, 48, 29, 0.17), 0 3px 8px rgba(21, 48, 29, 0.07);
+}
+
+.roaya-chat-welcome-dot {
+  width: 9px;
+  height: 9px;
+  flex: 0 0 9px;
+  border-radius: 50%;
+  background: #69b66d;
+  box-shadow: 0 0 0 4px rgba(105, 182, 109, 0.13);
+}
+
+.roaya-chat-welcome-copy {
+  display: grid;
+  gap: 0;
+  line-height: 1.5;
+}
+
+.roaya-chat-welcome-copy strong {
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.roaya-chat-welcome-copy > span {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+@keyframes roaya-chat-welcome-enter {
+  from { opacity: 0; transform: translateX(-8px) translateY(4px); }
+  to { opacity: 1; transform: translateX(0) translateY(0); }
+}
+
 .roaya-chat-launcher:hover {
   transform: translateY(-3px) scale(1.035);
   box-shadow: 0 16px 38px rgba(28, 94, 51, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.3);
@@ -7116,6 +7186,8 @@ html.intro-ready .home-hero-title .hero-highlight svg path {
   padding: 14px 17px;
   background: linear-gradient(120deg, #183d2b, #2e7040 68%, #448c4d);
   color: #fff;
+  cursor: move;
+  touch-action: none;
 }
 
 .roaya-chat-avatar {
@@ -8103,6 +8175,19 @@ html.intro-ready .home-hero-title .hero-highlight svg path {
     height: 56px;
   }
 
+  .roaya-chat-welcome {
+    right: 66px;
+    bottom: 5px;
+    min-width: 0;
+    width: min(232px, calc(100vw - 96px));
+    max-width: calc(100vw - 96px);
+    padding: 8px 10px;
+    border-radius: 14px;
+  }
+
+  .roaya-chat-welcome-copy strong { font-size: 12px; }
+  .roaya-chat-welcome-copy > span { font-size: 10px; }
+
   .roaya-chat-panel {
     position: fixed;
     right: 12px;
@@ -8116,6 +8201,7 @@ html.intro-ready .home-hero-title .hero-highlight svg path {
 
 @media (prefers-reduced-motion: reduce) {
   .roaya-chat-panel,
+  .roaya-chat-welcome,
   .roaya-chat-typing > span:not(.sr-only) {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;

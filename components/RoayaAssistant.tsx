@@ -1,7 +1,15 @@
 "use client";
 
-import { FormEvent, KeyboardEvent, useEffect, useRef, useState } from "react";
+import {
+  FormEvent,
+  KeyboardEvent,
+  PointerEvent as ReactPointerEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { ArrowUpLeft, Bot, MessageCircle, Send, Sparkles, X } from "lucide-react";
 
 type ChatLink = { label: string; href: string; description?: string };
@@ -343,13 +351,76 @@ function answerQuestion(rawQuestion: string): Omit<ChatMessage, "role"> | null {
 }
 
 export default function RoayaAssistant() {
+  const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [messages, setMessages] = useState<ChatMessage[]>([welcomeMessage]);
   const [draft, setDraft] = useState("");
   const [isSending, setIsSending] = useState(false);
   const panelRef = useRef<HTMLDivElement>(null);
+  const chatPanelRef = useRef<HTMLElement>(null);
+  const dragRef = useRef<{
+    pointerId: number;
+    startX: number;
+    startY: number;
+    originX: number;
+    originY: number;
+    panelLeft: number;
+    panelTop: number;
+    panelWidth: number;
+    panelHeight: number;
+  } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setDragOffset({ x: 0, y: 0 });
+  }, [pathname]);
+
+  const handleDragStart = (event: ReactPointerEvent<HTMLElement>) => {
+    const target = event.target;
+    if (!(target instanceof HTMLElement) || event.button !== 0) return;
+    if (target.closest("button, a, input, textarea, select, [contenteditable='true']")) return;
+    if (event.pointerType === "touch" && !target.closest(".roaya-chat-header")) return;
+    const panel = chatPanelRef.current;
+    if (!panel) return;
+
+    const rect = panel.getBoundingClientRect();
+    event.preventDefault();
+    dragRef.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      originX: dragOffset.x,
+      originY: dragOffset.y,
+      panelLeft: rect.left,
+      panelTop: rect.top,
+      panelWidth: rect.width,
+      panelHeight: rect.height,
+    };
+    event.currentTarget.setPointerCapture(event.pointerId);
+  };
+
+  const handleDragMove = (event: ReactPointerEvent<HTMLElement>) => {
+    const drag = dragRef.current;
+    if (!drag || drag.pointerId !== event.pointerId) return;
+
+    const minLeft = 8;
+    const maxLeft = Math.max(minLeft, window.innerWidth - drag.panelWidth - 8);
+    const minTop = 8;
+    const maxTop = Math.max(minTop, window.innerHeight - drag.panelHeight - 8);
+    const left = Math.min(maxLeft, Math.max(minLeft, drag.panelLeft + event.clientX - drag.startX));
+    const top = Math.min(maxTop, Math.max(minTop, drag.panelTop + event.clientY - drag.startY));
+
+    setDragOffset({
+      x: drag.originX + left - drag.panelLeft,
+      y: drag.originY + top - drag.panelTop,
+    });
+  };
+
+  const handleDragEnd = (event: ReactPointerEvent<HTMLElement>) => {
+    if (dragRef.current?.pointerId === event.pointerId) dragRef.current = null;
+  };
 
   useEffect(() => {
     if (!isOpen) return;
@@ -408,8 +479,20 @@ export default function RoayaAssistant() {
   return (
     <div className="roaya-chat" ref={panelRef}>
       {isOpen && (
-        <section className="roaya-chat-panel" aria-label="محادثة مع المساعد الذكي" role="dialog">
-          <header className="roaya-chat-header">
+        <section
+          className="roaya-chat-panel"
+          aria-label="محادثة مع المساعد الذكي"
+          role="dialog"
+          ref={chatPanelRef}
+          style={{ translate: `${dragOffset.x}px ${dragOffset.y}px` }}
+        >
+          <header
+            className="roaya-chat-header"
+            onPointerDown={handleDragStart}
+            onPointerMove={handleDragMove}
+            onPointerUp={handleDragEnd}
+            onPointerCancel={handleDragEnd}
+          >
             <span className="roaya-chat-avatar"><Bot size={23} /></span>
             <div className="roaya-chat-heading">
               <strong>المساعد الذكي</strong>
@@ -512,6 +595,22 @@ export default function RoayaAssistant() {
           </form>
           <p className="roaya-chat-privacy">لخصوصيتك، ما تبعتش بيانات بطاقتك أو كلمة المرور.</p>
         </section>
+      )}
+
+      {!isOpen && (
+        <button
+          className="roaya-chat-welcome"
+          type="button"
+          onClick={() => setIsOpen(true)}
+          aria-label="مرحبًا بك، افتح المساعد الذكي"
+        >
+          <span className="roaya-chat-welcome-dot" aria-hidden="true" />
+          <span className="roaya-chat-welcome-copy">
+            <strong>مرحبًا بك 👋</strong>
+            <span>رؤيــة بــاى دائما في خدمتك</span>
+            <span>إزاي أقدر أساعدك؟</span>
+          </span>
+        </button>
       )}
 
       <button
