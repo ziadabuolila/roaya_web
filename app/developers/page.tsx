@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { PageHero, CTA } from "@/components/Sections";
 import { developers } from "@/components/developerData";
+import BrandIcon from "@/components/BrandIcon";
 import { useState, useEffect } from "react";
 import {
   Code2,
@@ -12,8 +13,6 @@ import {
   Workflow,
   ShieldCheck,
   ArrowUpLeft,
-  Github,
-  Linkedin,
   Mail,
   MessageCircle,
   X,
@@ -162,25 +161,35 @@ export default function Developers() {
             {developers.map((dev, i) => (
               <article className="developer-team-card" key={dev.name}>
                 <div className="developer-team-image">
-                  <img
-                    src={dev.image}
-                    alt={dev.name}
+                  <button
+                    type="button"
+                    className="developer-team-photo"
                     onClick={() => openLightbox(dev.image)}
-                    style={{ cursor: "pointer" }}
-                  />
+                    aria-label={`عرض صورة ${dev.name}`}
+                  >
+                    <img src={dev.image} alt="" />
+                    <span className="developer-team-photo-glow" aria-hidden="true" />
+                    <span className="developer-team-photo-meta" dir="ltr">
+                      <span>ROAYA / DEVELOPER</span>
+                      <span>{String(i + 1).padStart(2, "0")}</span>
+                    </span>
+                    <span className="developer-team-identity">
+                      <h3>{dev.name}</h3>
+                      <span>{dev.role}</span>
+                    </span>
+                    <span className="developer-team-photo-hint">عرض الصورة</span>
+                  </button>
                 </div>
                 <div className="developer-team-content">
-                  <h3>{dev.name}</h3>
-                  <p className="developer-team-role">{dev.role}</p>
                   <div className="developer-team-social">
                     <a href={dev.social.whatsapp} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
                       <MessageCircle size={18} />
                     </a>
                     <a href={dev.social.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub">
-                      <Github size={18} />
+                      <BrandIcon name="github" />
                     </a>
                     <a href={dev.social.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-                      <Linkedin size={18} />
+                      <BrandIcon name="linkedin" />
                     </a>
                     <a href={dev.social.email} target="_blank" rel="noopener noreferrer" aria-label="Email">
                       <Mail size={18} />

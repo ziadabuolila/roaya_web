@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -33,8 +34,10 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="ar" dir="rtl" data-scroll-behavior="smooth" suppressHydrationWarning>
-      <head>
-        <script
+      <body>
+        <Script
+          id="roaya-initial-theme"
+          strategy="beforeInteractive"
           dangerouslySetInnerHTML={{
             __html: `(function () {
             try {
@@ -49,8 +52,6 @@ export default function RootLayout({
           })();`,
           }}
         />
-      </head>
-      <body>
         <ThemeProvider>
           <MotionEnhancer />
           <NavigationProgress />

@@ -1,14 +1,13 @@
 import type { Metadata } from "next";
 import { PageHero, CTA } from "@/components/Sections";
 import TeamMemberImage from "@/components/TeamMemberImage";
+import BrandIcon from "@/components/BrandIcon";
 import { teamMembers } from "@/components/managementData";
 import {
   BriefcaseBusiness,
   Code2,
   UsersRound,
   Handshake,
-  Linkedin,
-  Facebook,
   Mail,
   MessageCircle,
 } from "lucide-react";
@@ -108,6 +107,13 @@ export default function Team() {
                   <div className="member-image-container">
                     <TeamMemberImage src={member.image} alt={member.name} />
                   </div>
+                  <span className="member-card-index" dir="ltr">
+                    <b>{String(i + 1).padStart(2, "0")}</b>
+                  </span>
+                  <span className="member-card-caption">
+                    رؤية باي
+                    <small>{member.position}</small>
+                  </span>
                 </div>
 
                 <div className="member-body">
@@ -148,7 +154,7 @@ export default function Team() {
                         className="social-link facebook"
                         aria-label="فيس بوك"
                       >
-                        <Facebook size={18} />
+                        <BrandIcon name="facebook" />
                       </a>
                       <a
                         href={member.linkedin}
@@ -157,7 +163,7 @@ export default function Team() {
                         className="social-link linkedin"
                         aria-label="لينكد إن"
                       >
-                        <Linkedin size={18} />
+                        <BrandIcon name="linkedin" />
                       </a>
                       <a
                         href={`mailto:${member.email}`}
