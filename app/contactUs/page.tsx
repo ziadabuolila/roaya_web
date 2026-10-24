@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero } from "@/components/Sections";
 import ContactForm from "@/components/ContactForm";
-import { Mail, MapPin, Phone, PhoneCall, ShieldCheck } from "lucide-react";
+import { Clock3, Mail, MapPin, MessageCircle, Phone, PhoneCall, ShieldCheck } from "lucide-react";
 export const metadata: Metadata = { title: "تواصل معنا" };
 export default function Contact() {
   return (
@@ -47,11 +47,11 @@ export default function Contact() {
             </div>
             <div className="contact-method">
               <span>
-                <Phone size={19} />
+                <MessageCircle size={19} />
               </span>
               <div>
-                <small>خدمة العملاء</small>
-                <a href="tel:01155660300" dir="ltr">01155660300</a>
+                <small>واتساب خدمة العملاء</small>
+                <a href="https://wa.me/201155660300" target="_blank" rel="noopener noreferrer" dir="ltr">01155660300</a>
               </div>
             </div>
             <div className="contact-method">
@@ -61,6 +61,16 @@ export default function Contact() {
               <div>
                 <small>الخط الأرضي</small>
                 <a href="tel:0483432109" dir="ltr">0483432109</a>
+              </div>
+            </div>
+            <div className="contact-method">
+              <span>
+                <Clock3 size={19} />
+              </span>
+              <div>
+                <small>مواعيد العمل</small>
+                <b>الأحد إلى الخميس، 10 صباحًا – 5 مساءً</b>
+                <small>الجمعة والسبت إجازة رسمية</small>
               </div>
             </div>
             <div className="contact-assurance">

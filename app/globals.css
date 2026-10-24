@@ -557,7 +557,7 @@ html[data-theme="dark"] .nav-links .dropdown-menu a:hover {
   stroke: #6bc769;
 }
 .hero-desc {
-  font-size: 14px;
+  font-size: 18px;
   color: #78857a;
   max-width: 485px;
   line-height: 2.15;
@@ -1277,7 +1277,7 @@ html[data-theme="dark"] .nav-links .dropdown-menu a:hover {
   margin-top: 15px;
 }
 .tag-row span {
-  font-size: 9px;
+  font-size: 12px;
   padding: 3px 8px;
   border-radius: 6px;
   background: #f4f7f2;
@@ -1826,7 +1826,7 @@ html[data-theme="dark"] .nav-links .dropdown-menu a:hover {
 }
 .page-hero p {
   max-width: 550px;
-  font-size: 13px;
+  font-size: 16px;
   color: #718073;
   line-height: 2.1;
   margin: 0;
@@ -4447,7 +4447,7 @@ body:has(.loader-overlay)::-webkit-scrollbar {
   }
   .hero-desc {
     max-width: 580px;
-    font-size: 14px;
+    font-size: 15px;
   }
   .hero-visual {
     min-height: 400px;
@@ -6990,7 +6990,7 @@ html.intro-ready .home-hero-title .hero-highlight svg path {
   justify-content: center;
   flex-direction: column;
   padding: 30px;
-  color: #fff;
+  color: #171d18;
   opacity: 0;
   transform: translateY(9px);
   transition: opacity 0.22s ease, transform 0.3s ease;
@@ -6998,14 +6998,14 @@ html.intro-ready .home-hero-title .hero-highlight svg path {
 }
 
 .payment-service-reveal > span {
-  color: rgba(255, 255, 255, 0.72);
+  color: rgba(23, 29, 24, 0.72);
   font-size: 12px;
   font-weight: 700;
 }
 
 .payment-service-reveal p {
   margin: 11px 0 0;
-  color: #fff;
+  color: #171d18;
   font-size: 16px;
   font-weight: 700;
   line-height: 1.9;
@@ -7037,6 +7037,1091 @@ html.intro-ready .home-hero-title .hero-highlight svg path {
   transition-delay: 0.14s;
 }
 
+/* Floating Roaya Pay assistant */
+.roaya-chat {
+  position: fixed;
+  z-index: 120;
+  right: max(24px, env(safe-area-inset-right));
+  bottom: max(24px, env(safe-area-inset-bottom));
+  direction: rtl;
+  font-family: "Cairo", sans-serif;
+}
+
+.roaya-chat-launcher {
+  position: relative;
+  display: grid;
+  width: 62px;
+  height: 62px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 50%;
+  background: linear-gradient(145deg, #55a35d, #256b3e);
+  box-shadow: 0 12px 32px rgba(28, 94, 51, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.28);
+  color: #fff;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s ease;
+}
+
+.roaya-chat-launcher:hover {
+  transform: translateY(-3px) scale(1.035);
+  box-shadow: 0 16px 38px rgba(28, 94, 51, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.roaya-chat-launcher:focus-visible,
+.roaya-chat-close:focus-visible,
+.roaya-chat-form button:focus-visible,
+.roaya-chat-suggestions button:focus-visible {
+  outline: 3px solid rgba(92, 169, 100, 0.65);
+  outline-offset: 3px;
+}
+
+.roaya-chat-launcher.is-open {
+  background: #254d32;
+}
+
+.roaya-chat-launcher-ping {
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 13px;
+  height: 13px;
+  border: 2px solid #f8faf7;
+  border-radius: 50%;
+  background: #a9e36e;
+  box-shadow: 0 0 0 4px rgba(169, 227, 110, 0.2);
+}
+
+.roaya-chat-panel {
+  position: absolute;
+  right: 0;
+  bottom: 78px;
+  display: flex;
+  width: min(390px, calc(100vw - 32px));
+  height: min(570px, calc(100dvh - 125px));
+  min-height: 400px;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid rgba(75, 124, 82, 0.22);
+  border-radius: 24px;
+  background: var(--paper);
+  box-shadow: 0 26px 90px rgba(17, 39, 24, 0.25), 0 5px 18px rgba(17, 39, 24, 0.1);
+  color: var(--ink);
+  animation: roaya-chat-enter 0.2s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.roaya-chat-header {
+  display: flex;
+  min-height: 82px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 17px;
+  background: linear-gradient(120deg, #183d2b, #2e7040 68%, #448c4d);
+  color: #fff;
+}
+
+.roaya-chat-avatar {
+  display: grid;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.13);
+  color: #d6f2cf;
+}
+
+.roaya-chat-heading {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  line-height: 1.4;
+}
+
+.roaya-chat-heading strong {
+  font-size: 17px;
+  font-weight: 900;
+}
+
+.roaya-chat-heading > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 11px;
+}
+
+.roaya-chat-heading i {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #b8ed84;
+  box-shadow: 0 0 0 3px rgba(184, 237, 132, 0.15);
+}
+
+.roaya-chat-close {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.roaya-chat-close:hover {
+  transform: rotate(5deg);
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.roaya-chat-messages {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 20px 16px 14px;
+  scrollbar-color: rgba(91, 146, 91, 0.35) transparent;
+  scrollbar-width: thin;
+}
+
+.roaya-chat-message {
+  display: flex;
+  max-width: 92%;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 7px;
+  padding: 11px 13px;
+  border: 1px solid var(--line);
+  border-radius: 17px 17px 5px 17px;
+  background: var(--white);
+  box-shadow: 0 4px 13px rgba(22, 55, 32, 0.045);
+  color: var(--ink);
+}
+
+.roaya-chat-message.is-assistant {
+  align-self: flex-start;
+  border-top-right-radius: 5px;
+}
+
+.roaya-chat-message.is-assistant > svg {
+  flex: 0 0 auto;
+  margin-top: 5px;
+  color: var(--green-dark);
+}
+
+.roaya-chat-message-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--green-dark);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+
+.roaya-chat-message-brand svg {
+  color: #70a84b;
+}
+
+.roaya-chat-message.is-user {
+  align-self: flex-end;
+  border-color: transparent;
+  border-radius: 17px 17px 17px 5px;
+  background: linear-gradient(135deg, #347c46, #286a3d);
+  color: #fff;
+}
+
+.roaya-chat-message p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.85;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.roaya-chat-details {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 7px;
+  margin: 3px 0 2px;
+}
+
+.roaya-chat-detail {
+  display: grid;
+  grid-template-columns: 25px minmax(0, 1fr);
+  gap: 8px;
+  padding: 9px 8px;
+  border: 1px solid rgba(78, 137, 78, 0.13);
+  border-radius: 11px;
+  background: linear-gradient(120deg, rgba(89, 159, 88, 0.055), rgba(89, 159, 88, 0.018));
+}
+
+.roaya-chat-detail-index {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 8px;
+  background: rgba(89, 159, 88, 0.12);
+  color: var(--green-dark);
+  font-size: 9px;
+  font-weight: 900;
+}
+
+.roaya-chat-detail strong {
+  display: block;
+  margin: 1px 0 3px;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.6;
+}
+
+.roaya-chat-detail p {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.75;
+}
+
+.roaya-chat-message-links {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 3px;
+}
+
+.roaya-chat-message-links a {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border: 1px solid rgba(78, 137, 78, 0.17);
+  border-radius: 12px;
+  background: linear-gradient(120deg, rgba(89, 159, 88, 0.075), rgba(89, 159, 88, 0.025));
+  color: var(--green-dark);
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.roaya-chat-message-links a:hover {
+  transform: translateY(-1px);
+  border-color: rgba(78, 137, 78, 0.48);
+  background: rgba(89, 159, 88, 0.13);
+  box-shadow: 0 5px 14px rgba(39, 94, 49, 0.08);
+}
+
+.careers-section {
+  padding-top: 54px;
+}
+
+.careers-intro {
+  max-width: 680px;
+  margin: 0 auto 36px;
+  text-align: center;
+}
+
+.careers-intro > span,
+.career-card-heading > span {
+  color: var(--green-dark);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+}
+
+.careers-intro h2 {
+  margin: 9px 0 10px;
+  color: var(--ink);
+  font-size: clamp(27px, 4vw, 39px);
+  font-weight: 900;
+}
+
+.careers-intro p,
+.career-card-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.careers-forms {
+  display: flex;
+  max-width: 940px;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0 auto;
+}
+
+.career-card {
+  position: relative;
+  overflow: hidden;
+  padding: clamp(22px, 4vw, 38px);
+  border: 1px solid rgba(68, 123, 71, 0.16);
+  border-radius: 26px;
+  background: linear-gradient(145deg, var(--paper), var(--white));
+  box-shadow: 0 20px 54px rgba(31, 74, 40, 0.08);
+}
+
+.career-card::before {
+  position: absolute;
+  top: -94px;
+  left: -68px;
+  width: 230px;
+  height: 230px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(103, 171, 87, 0.13), transparent 70%);
+  content: "";
+  pointer-events: none;
+}
+
+.career-card-icon {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 17px;
+  place-items: center;
+  border: 1px solid rgba(83, 148, 76, 0.2);
+  border-radius: 17px;
+  background: rgba(89, 159, 88, 0.1);
+  color: var(--green-dark);
+}
+
+.career-card-heading {
+  max-width: 700px;
+  margin-bottom: 24px;
+}
+
+.career-card-heading h2 {
+  margin: 5px 0 8px;
+  color: var(--ink);
+  font-size: clamp(23px, 3vw, 30px);
+  font-weight: 900;
+}
+
+.career-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 15px;
+}
+
+.career-form-grid > label:not(.career-file) {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.career-form-grid input:not([type="file"]),
+.career-form-grid textarea {
+  width: 100%;
+  min-width: 0;
+  padding: 12px 13px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  outline: 0;
+  background: var(--white);
+  color: var(--ink);
+  font: inherit;
+  font-size: 13px;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.career-form-grid input:focus,
+.career-form-grid textarea:focus {
+  border-color: rgba(74, 145, 73, 0.64);
+  box-shadow: 0 0 0 3px rgba(81, 151, 82, 0.1);
+}
+
+.career-form-grid textarea {
+  resize: vertical;
+}
+
+.career-form-wide {
+  grid-column: 1 / -1;
+}
+
+.career-file {
+  display: flex;
+  min-height: 66px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px dashed rgba(77, 139, 73, 0.43);
+  border-radius: 14px;
+  background: rgba(89, 159, 88, 0.045);
+  color: var(--green-dark);
+  cursor: pointer;
+}
+
+.career-file > span {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.career-file strong { font-size: 12px; }
+.career-file small { overflow: hidden; color: var(--muted); font-size: 10px; text-overflow: ellipsis; white-space: nowrap; }
+.career-file input { width: min(220px, 40%); color: var(--muted); font-size: 10px; }
+
+.career-form-note {
+  margin: 13px 0 16px;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.8;
+}
+
+.scholarship-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.scholarship-form-section {
+  min-width: 0;
+  margin: 0;
+  padding: 19px;
+  border: 1px solid rgba(68, 123, 71, 0.14);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.scholarship-section-heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0 8px;
+  color: var(--ink);
+}
+
+.scholarship-section-heading > span:first-child {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  place-items: center;
+  border-radius: 11px;
+  background: linear-gradient(145deg, #438c4c, #28643a);
+  box-shadow: 0 5px 13px rgba(42, 104, 54, 0.17);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.scholarship-section-heading > div,
+.scholarship-section-heading > span:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.scholarship-section-heading strong {
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.scholarship-section-heading small {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.scholarship-form .career-form-grid {
+  margin-top: 15px;
+}
+
+.scholarship-form .career-form-grid > label:not(.career-file) {
+  gap: 9px;
+  color: #344a3a;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.scholarship-form .career-form-grid input:not([type="file"]) {
+  min-height: 49px;
+  padding: 12px 15px;
+  border-color: rgba(84, 125, 87, 0.17);
+  border-radius: 14px;
+  background: linear-gradient(145deg, var(--white), rgba(246, 250, 246, 0.92));
+  box-shadow: 0 3px 10px rgba(30, 70, 40, 0.025);
+}
+
+.scholarship-form .career-form-grid input:not([type="file"]):hover {
+  border-color: rgba(74, 145, 73, 0.4);
+}
+
+[data-theme="dark"] .scholarship-form .career-form-grid > label:not(.career-file) {
+  color: #e0e9e1;
+}
+
+[data-theme="dark"] .scholarship-form .career-form-grid input:not([type="file"]) {
+  border-color: rgba(124, 184, 122, 0.19);
+  background: linear-gradient(145deg, #17231b, #1b2920);
+}
+
+.scholarship-question {
+  margin-top: 17px;
+}
+
+.scholarship-question > strong,
+.scholarship-long-answer {
+  display: block;
+  margin-bottom: 9px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.scholarship-question > strong small {
+  margin-inline-start: 5px;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.scholarship-validation {
+  margin: 8px 0 0;
+  color: #b44141;
+  font-size: 11px;
+  font-weight: 800;
+  animation: roaya-chat-enter 0.2s ease both;
+}
+
+[data-theme="dark"] .scholarship-validation {
+  color: #ff9b9b;
+}
+
+.scholarship-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+}
+
+.scholarship-language-options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.scholarship-option {
+  position: relative;
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  gap: 9px;
+  padding: 9px 11px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--white);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 750;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.scholarship-option:hover {
+  transform: translateY(-2px);
+  border-color: rgba(71, 143, 73, 0.52);
+  box-shadow: 0 6px 16px rgba(39, 94, 49, 0.08);
+}
+
+.scholarship-option input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.scholarship-control {
+  position: relative;
+  display: grid;
+  width: 17px;
+  height: 17px;
+  flex: 0 0 17px;
+  place-items: center;
+  border: 1.5px solid #aab9aa;
+  border-radius: 50%;
+  background: var(--paper);
+  transition: border-color 0.18s ease, background 0.18s ease, transform 0.18s ease;
+}
+
+.scholarship-option:has(input[type="checkbox"]) .scholarship-control {
+  border-radius: 5px;
+}
+
+.scholarship-option:has(input:checked) {
+  border-color: rgba(59, 132, 66, 0.56);
+  background: linear-gradient(120deg, rgba(89, 159, 88, 0.12), rgba(89, 159, 88, 0.045));
+  box-shadow: 0 5px 14px rgba(39, 94, 49, 0.07);
+}
+
+.scholarship-option input:checked + .scholarship-control {
+  transform: scale(1.04);
+  border-color: #347c46;
+  background: #347c46;
+  animation: scholarship-check 0.22s ease both;
+}
+
+.scholarship-option input:checked + .scholarship-control::after {
+  width: 7px;
+  height: 4px;
+  border-bottom: 2px solid white;
+  border-left: 2px solid white;
+  content: "";
+  transform: rotate(-45deg) translate(1px, -1px);
+}
+
+.scholarship-option input:focus-visible + .scholarship-control {
+  outline: 3px solid rgba(92, 169, 100, 0.34);
+  outline-offset: 2px;
+}
+
+.scholarship-long-answer {
+  margin-top: 18px;
+  line-height: 1.8;
+}
+
+.scholarship-textarea-shell {
+  position: relative;
+  display: block;
+  margin-top: 9px;
+}
+
+.scholarship-long-answer textarea {
+  display: block;
+  width: 100%;
+  min-height: 164px;
+  padding: 17px 18px 42px;
+  border: 1px solid rgba(84, 125, 87, 0.2);
+  border-radius: 16px;
+  outline: 0;
+  background: linear-gradient(145deg, #fff, #f7faf6);
+  box-shadow: inset 0 1px 2px rgba(31, 74, 40, 0.035), 0 6px 20px rgba(31, 74, 40, 0.04);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.9;
+  resize: vertical;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.scholarship-long-answer textarea::placeholder {
+  color: #97a398;
+  opacity: 1;
+}
+
+.scholarship-long-answer textarea:focus {
+  border-color: rgba(65, 139, 70, 0.65);
+  background: var(--white);
+  box-shadow: 0 0 0 4px rgba(81, 151, 82, 0.1), 0 12px 28px rgba(31, 74, 40, 0.075);
+}
+
+.scholarship-textarea-shell > small {
+  position: absolute;
+  right: 14px;
+  bottom: 12px;
+  padding: 3px 8px;
+  border: 1px solid rgba(84, 125, 87, 0.12);
+  border-radius: 999px;
+  background: rgba(240, 246, 239, 0.9);
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .scholarship-long-answer textarea {
+  border-color: rgba(124, 184, 122, 0.2);
+  background: linear-gradient(145deg, #17231b, #1a281f);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12), 0 6px 20px rgba(0, 0, 0, 0.12);
+}
+
+[data-theme="dark"] .scholarship-long-answer textarea::placeholder {
+  color: #849487;
+}
+
+[data-theme="dark"] .scholarship-long-answer textarea:focus {
+  border-color: rgba(132, 196, 125, 0.68);
+  background: #17231b;
+}
+
+[data-theme="dark"] .scholarship-textarea-shell > small {
+  border-color: rgba(124, 184, 122, 0.18);
+  background: #223328;
+  color: #aab8ad;
+}
+
+.scholarship-form .career-submit {
+  position: relative;
+  min-height: 55px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 16px;
+  background: linear-gradient(110deg, #1e5633, #347c46 48%, #5a9f58);
+  box-shadow: 0 12px 28px rgba(42, 104, 54, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  font-size: 13px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.scholarship-form .career-submit::before {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 30%, rgba(255, 255, 255, 0.2) 50%, transparent 70%);
+  content: "";
+  transform: translateX(-120%);
+  transition: transform 0.65s ease;
+}
+
+.scholarship-form .career-submit:hover::before {
+  transform: translateX(120%);
+}
+
+.scholarship-form .career-submit:hover {
+  transform: translateY(-2px);
+  filter: saturate(1.08);
+  box-shadow: 0 16px 34px rgba(42, 104, 54, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+[data-theme="dark"] .scholarship-form-section {
+  border-color: rgba(124, 184, 122, 0.16);
+  background: rgba(12, 20, 15, 0.2);
+}
+
+[data-theme="dark"] .scholarship-option {
+  border-color: rgba(124, 184, 122, 0.2);
+  background: #19251d;
+}
+
+[data-theme="dark"] .scholarship-option:has(input:checked) {
+  border-color: rgba(143, 206, 129, 0.6);
+  background: rgba(89, 159, 88, 0.17);
+}
+
+[data-theme="dark"] .scholarship-control {
+  border-color: #657567;
+  background: #111a14;
+}
+
+@keyframes scholarship-check {
+  0% { transform: scale(0.75); }
+  70% { transform: scale(1.18); }
+  100% { transform: scale(1.04); }
+}
+
+.career-submit {
+  display: inline-flex;
+  min-height: 46px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 13px;
+  background: linear-gradient(135deg, #367c45, #245d37);
+  box-shadow: 0 8px 22px rgba(42, 104, 54, 0.2);
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+  cursor: pointer;
+}
+
+.career-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 28px rgba(42, 104, 54, 0.26); }
+
+.career-contact-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 8px;
+  color: var(--green-dark);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+[data-theme="dark"] .career-card {
+  border-color: rgba(124, 184, 122, 0.2);
+  background: linear-gradient(145deg, #17231b, #1d2a21);
+  box-shadow: 0 20px 54px rgba(0, 0, 0, 0.2);
+}
+
+[data-theme="dark"] .career-card-icon,
+[data-theme="dark"] .career-file {
+  border-color: rgba(124, 184, 122, 0.25);
+  background: rgba(124, 184, 122, 0.09);
+  color: #a7d590;
+}
+
+[data-theme="dark"] .careers-intro > span,
+[data-theme="dark"] .career-card-heading > span,
+[data-theme="dark"] .career-contact-link { color: #a7d590; }
+
+@media (max-width: 640px) {
+  .careers-section { padding-top: 38px; }
+  .career-form-grid { grid-template-columns: 1fr; }
+  .career-form-wide { grid-column: auto; }
+  .career-file { flex-wrap: wrap; }
+  .career-file input { width: 100%; margin-inline-start: 31px; }
+  .career-submit { width: 100%; }
+  .scholarship-form-section { padding: 14px 12px; }
+  .scholarship-language-options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .scholarship-options:not(.scholarship-language-options) .scholarship-option { flex: 1 1 145px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scholarship-option,
+  .scholarship-control {
+    transition-duration: 0.01ms;
+  }
+  .scholarship-option input:checked + .scholarship-control {
+    animation-duration: 0.01ms;
+  }
+}
+
+.roaya-chat-link-copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.roaya-chat-link-copy strong {
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.roaya-chat-link-copy small {
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+}
+
+.roaya-chat-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  padding-inline-start: 22px;
+}
+
+.roaya-chat-suggestions button {
+  padding: 7px 10px;
+  border: 1px solid rgba(76, 137, 78, 0.26);
+  border-radius: 999px;
+  background: rgba(89, 159, 88, 0.07);
+  color: var(--green-dark);
+  font-size: 11px;
+  font-weight: 700;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.roaya-chat-suggestions button:hover:not(:disabled) {
+  border-color: var(--green);
+  background: rgba(89, 159, 88, 0.15);
+}
+
+.roaya-chat-suggestions button:disabled {
+  cursor: wait;
+  opacity: 0.55;
+}
+
+.roaya-chat-message.roaya-chat-typing {
+  width: fit-content;
+  min-width: 62px;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 15px;
+}
+
+.roaya-chat-typing > span:not(.sr-only) {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--green-dark);
+  animation: roaya-chat-dot 0.95s ease-in-out infinite;
+}
+
+.roaya-chat-typing > span:nth-child(2) { animation-delay: 0.13s; }
+.roaya-chat-typing > span:nth-child(3) { animation-delay: 0.26s; }
+
+.roaya-chat-form {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0 14px;
+  padding: 7px 8px 7px 7px;
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  background: var(--white);
+  box-shadow: 0 5px 18px rgba(24, 57, 38, 0.05);
+}
+
+.roaya-chat-form:focus-within {
+  border-color: rgba(81, 151, 82, 0.6);
+  box-shadow: 0 0 0 3px rgba(81, 151, 82, 0.1);
+}
+
+.roaya-chat-form input {
+  width: 100%;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 13px;
+}
+
+.roaya-chat-form input::placeholder {
+  color: var(--muted);
+}
+
+.roaya-chat-form input:disabled {
+  opacity: 0.65;
+}
+
+.roaya-chat-form button {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  flex: 0 0 39px;
+  place-items: center;
+  border: 0;
+  border-radius: 12px;
+  background: #347c46;
+  color: #fff;
+  transition: transform 0.16s ease, background 0.16s ease, opacity 0.16s ease;
+}
+
+.roaya-chat-form button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  background: #245f38;
+}
+
+.roaya-chat-form button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.roaya-chat-privacy {
+  margin: 7px 14px 10px;
+  color: var(--muted);
+  font-size: 10px;
+  text-align: center;
+}
+
+.roaya-chat .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  clip-path: inset(50%);
+}
+
+[data-theme="dark"] .roaya-chat-panel {
+  border-color: rgba(130, 185, 128, 0.19);
+  box-shadow: 0 26px 90px rgba(0, 0, 0, 0.5), 0 5px 18px rgba(0, 0, 0, 0.22);
+}
+
+[data-theme="dark"] .roaya-chat-message.is-assistant {
+  border-color: #2c3b30;
+  background: #1a261e;
+}
+
+[data-theme="dark"] .roaya-chat-detail {
+  border-color: rgba(124, 184, 122, 0.16);
+  background: linear-gradient(120deg, rgba(124, 184, 122, 0.09), rgba(124, 184, 122, 0.035));
+}
+
+[data-theme="dark"] .roaya-chat-detail-index {
+  background: rgba(124, 184, 122, 0.15);
+  color: #a7d590;
+}
+
+[data-theme="dark"] .roaya-chat-suggestions button {
+  border-color: rgba(124, 184, 122, 0.27);
+  background: rgba(124, 184, 122, 0.08);
+}
+
+[data-theme="dark"] .roaya-chat-suggestions button:hover:not(:disabled) {
+  background: rgba(124, 184, 122, 0.16);
+}
+
+[data-theme="dark"] .roaya-chat-message-links a {
+  border-color: rgba(124, 184, 122, 0.25);
+  background: linear-gradient(120deg, rgba(124, 184, 122, 0.12), rgba(124, 184, 122, 0.055));
+}
+
+[data-theme="dark"] .roaya-chat-message-brand {
+  color: #a7d590;
+}
+
+[data-theme="dark"] .roaya-chat-link-copy small {
+  color: #aab8ad;
+}
+
+[data-theme="dark"] .roaya-chat-launcher-ping {
+  border-color: #121a15;
+}
+
+@keyframes roaya-chat-enter {
+  from { opacity: 0; transform: translateY(10px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes roaya-chat-dot {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.55; }
+  30% { transform: translateY(-4px); opacity: 1; }
+}
+
+@media (max-width: 560px) {
+  .roaya-chat {
+    right: max(16px, env(safe-area-inset-right));
+    bottom: max(16px, env(safe-area-inset-bottom));
+  }
+
+  .roaya-chat-launcher {
+    width: 56px;
+    height: 56px;
+  }
+
+  .roaya-chat-panel {
+    position: fixed;
+    right: 12px;
+    bottom: calc(82px + env(safe-area-inset-bottom));
+    width: calc(100vw - 24px);
+    height: min(600px, calc(100dvh - 106px - env(safe-area-inset-bottom)));
+    min-height: min(390px, calc(100dvh - 106px - env(safe-area-inset-bottom)));
+    border-radius: 21px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .roaya-chat-panel,
+  .roaya-chat-typing > span:not(.sr-only) {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+
 [data-theme="dark"] .payment-service-card {
   border-color: rgba(124, 184, 122, 0.16);
   background: #1a261e;
@@ -7045,6 +8130,18 @@ html.intro-ready .home-hero-title .hero-highlight svg path {
 
 [data-theme="dark"] .payment-service-card::before {
   background: linear-gradient(140deg, #265f3a, #3e8849 70%, #67a960);
+}
+
+[data-theme="dark"] .payment-service-reveal {
+  color: #fff;
+}
+
+[data-theme="dark"] .payment-service-reveal > span {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+[data-theme="dark"] .payment-service-reveal p {
+  color: #fff;
 }
 
 [data-theme="dark"] .payment-service-image {

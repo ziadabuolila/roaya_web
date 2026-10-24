@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowUpLeft, Zap, Mail, MapPin, Phone } from "lucide-react";
+import { ArrowUpLeft, Zap, Mail, MapPin, Phone, MessageCircle } from "lucide-react";
 export default function Footer() {
   return (
     <footer className="footer">
@@ -47,6 +47,8 @@ export default function Footer() {
             <Link href="/developers">المطورون</Link>
             <Link href="/programs">برامجنا</Link>
             <Link href="/partners">شركاؤنا</Link>
+            <Link href="/careers">التقديم للوظائف</Link>
+            <Link href="/scholarship">المنحة البرمجية</Link>
           </div>
           <div>
             <h4>خدماتنا</h4>
@@ -68,6 +70,10 @@ export default function Footer() {
             <a href="/customerService">
               <Zap size={16} />
               خدمة العملاء
+            </a>
+            <a href="https://wa.me/201155660300" target="_blank" rel="noopener noreferrer">
+              <MessageCircle size={16} />
+              واتساب خدمة العملاء
             </a>
             <span>
               <MapPin size={16} />
