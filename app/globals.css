@@ -4359,7 +4359,7 @@ body:has(.loader-overlay)::-webkit-scrollbar {
     position: static;
     display: none;
     width: calc(100% - 48px);
-    margin: 2px 24px 12px;
+    margin: 10px 24px 12px;
     border: 1px solid rgba(42, 58, 48, 0.3);
     box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
     background: rgba(31, 48, 40, 0.72);
@@ -10359,7 +10359,7 @@ html[data-theme="dark"] .download-button:hover {
   align-items: center;
   width: 100%;
   min-height: 47px;
-  padding: 11px 12px;
+  padding: 16px 20px;
   gap: 10px;
   color: #d5e2d8;
   background: transparent;
