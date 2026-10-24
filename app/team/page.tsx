@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { PageHero, CTA } from "@/components/Sections";
 import TeamMemberImage from "@/components/TeamMemberImage";
+import { teamMembers } from "@/components/managementData";
 import {
   BriefcaseBusiness,
   Code2,
@@ -33,29 +34,6 @@ const roles = [
     t: "الشراكات وتطوير الأعمال",
     d: "بناء علاقات عمل تساعد على تقديم قيمة مستدامة.",
   },
-];
-
-const teamMembers = [
-  {
-    name: "المهندس عماد ابوليله",
-    position: "رئيس مجلس الإدارة",
-    image: "/images/team/Emad.png",
-    phone: "01100730060",
-    whatsapp: "https://wa.me/201100730060",
-    facebook: "https://www.facebook.com/share/18n25Y83j9/",
-    linkedin: "https://www.linkedin.com/in/emad-abuolila-76a744252",
-    email: "emad.abuolila@gmail.com",
-  },
-  {
-    name: "المهندس بلال زيدان",
-    position: "العضو المنتدب",
-    image: "/images/team/Belal.jpg",
-    phone: "01100730060",
-    whatsapp: "https://wa.me/201100730060",
-    facebook: "https://www.facebook.com/share/18n25Y83j9/",
-    linkedin: "https://www.linkedin.com/in/emad-abuolila-76a744252",
-    email: "emad.abuolila@gmail.com",
-  },  
 ];
 
 export default function Team() {

@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Plus, Minus, HelpCircle, CreditCard, Code2, ShieldCheck, HeadphonesIcon, Clock, CheckCircle } from "lucide-react";
 
-const faqCategories = [
+export const faqCategories = [
   {
     id: "about",
     title: "عن الشركة",

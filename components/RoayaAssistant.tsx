@@ -11,6 +11,10 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowUpLeft, Bot, MessageCircle, Send, Sparkles, X } from "lucide-react";
+import { faqCategories } from "@/components/FaqList";
+import { developers } from "@/components/developerData";
+import { teamMembers } from "@/components/managementData";
+import { searchWebsite } from "@/components/siteSearch";
 
 type ChatLink = { label: string; href: string; description?: string };
 type ChatMessage = {
@@ -74,11 +78,82 @@ function normalizeArabic(value: string) {
     .trim();
 }
 
+function findSiteFaqAnswer(question: string): Omit<ChatMessage, "role"> | null {
+  const ignoredWords = new Set([
+    "انا", "انت", "انتم", "اي", "ايه", "ازاي", "امتى", "هل", "ما", "ماذا",
+    "متى", "من", "مين", "هو", "هي", "في", "عن", "على", "الى", "لي", "لو",
+    "يا", "ب", "ال", "ماهي", "ماهو", "رؤيه", "باي", "شركه",
+  ]);
+  const terms = normalizeArabic(question)
+    .split(" ")
+    .filter((word) => word.length > 1 && !ignoredWords.has(word));
+
+  if (terms.length === 0) return null;
+
+  let bestMatch: { question: string; answer: string; score: number } | null = null;
+  for (const category of faqCategories) {
+    for (const item of category.items) {
+      const faqQuestion = normalizeArabic(item.question);
+      const faqTerms = new Set(faqQuestion.split(" "));
+      const matchedTerms = terms.filter((term) => faqTerms.has(term)).length;
+      const score = matchedTerms / terms.length;
+
+      if (matchedTerms >= Math.min(2, terms.length) && score >= 0.55 && (!bestMatch || score > bestMatch.score)) {
+        bestMatch = { question: item.question, answer: item.answer, score };
+      }
+    }
+  }
+
+  if (!bestMatch) return null;
+  return {
+    content: bestMatch.answer,
+    links: [{ label: "مصدر الإجابة على الموقع", href: "/fag", description: bestMatch.question }],
+  };
+}
+
 function matchesAny(question: string, terms: string[]) {
   return terms.some((term) => question.includes(normalizeArabic(term)));
 }
 
-function answerQuestion(rawQuestion: string): Omit<ChatMessage, "role"> | null {
+function editDistance(left: string, right: string) {
+  const row = Array.from({ length: right.length + 1 }, (_, index) => index);
+  for (let leftIndex = 1; leftIndex <= left.length; leftIndex += 1) {
+    let diagonal = row[0];
+    row[0] = leftIndex;
+    for (let rightIndex = 1; rightIndex <= right.length; rightIndex += 1) {
+      const previous = row[rightIndex];
+      row[rightIndex] = Math.min(
+        row[rightIndex] + 1,
+        row[rightIndex - 1] + 1,
+        diagonal + (left[leftIndex - 1] === right[rightIndex - 1] ? 0 : 1),
+      );
+      diagonal = previous;
+    }
+  }
+  return row[right.length];
+}
+
+const casualGreetingPhrases = [
+  "اي الدنيا", "ايه الدنيا", "ايه الاخبار", "اي الاخبار", "انت كويس", "كويس",
+  "انت عامل اي", "انت عامل ايه", "عامل اي", "عامل ايه", "انت اخبارك اي", "انت اخبارك ايه",
+  "اخبارك اي", "اخبارك ايه",
+];
+
+function looksLikeMisspelledCasualGreeting(question: string) {
+  const words = question.split(" ").filter(Boolean);
+  return casualGreetingPhrases.some((phrase) => {
+    const expectedWords = phrase.split(" ");
+    if (words.length !== expectedWords.length) return false;
+
+    const differences = words.reduce((total, word, index) => {
+      const expected = expectedWords[index];
+      return total + (word === expected ? 0 : editDistance(word, expected));
+    }, 0);
+    return differences > 0 && differences <= 2;
+  });
+}
+
+async function answerQuestion(rawQuestion: string): Promise<Omit<ChatMessage, "role"> | null> {
   const question = normalizeArabic(rawQuestion);
 
   if (matchesAny(question, ["منحه", "المنحه", "منحة برمجية", "منحه برمجه", "منحه برمجيه", "تدريب برمجه", "تقديم للمنحه", "اقدم للمنحه"])) {
@@ -106,6 +181,30 @@ function answerQuestion(rawQuestion: string): Omit<ChatMessage, "role"> | null {
     return { content: thanksMessages[Math.floor(Math.random() * thanksMessages.length)] };
   }
 
+  if (["بقولك اي", "بقولك ايه" , "بقولك"].includes(question)) {
+    return { content: "نعم، ماذا تريد؟ أنا هنا لمساعدتك." };
+  }
+
+  if (/^(?:انت|انتي|حضرتك)? ?عامل ايه?$/.test(question)) {
+    return { content: "الحمد لله، هذا بفضل ربي." };
+  }
+
+  if (/^(?:انت|انتي|حضرتك)? ?اخبارك ايه?$/.test(question) || ["اي الدنيا", "ايه الدنيا", "ايه الاخبار", "اي الاخبار"].includes(question)) {
+    return { content: "الدنيا تمام، الحمد لله." };
+  }
+
+  if (/^(?:انت|انتي|حضرتك)? ?كويسه?$/.test(question) || question === "كويس") {
+    return { content: "الحمد لله، الدنيا تمام 😊" };
+  }
+
+  if (looksLikeMisspelledCasualGreeting(question)) {
+    return { content: "لا أفهم هذا الكلام، من فضلك وضّح ماذا تريد." };
+  }
+
+  if (question === "بص") {
+    return { content: "قول، أنا سامعك." };
+  }
+
   if (!hasFollowUpQuestion && matchesAny(question, ["السلام عليكم", "السلام عليكم ورحمه الله"])) {
     return { content: "وعليكم السلام ورحمة الله وبركاته 🌿 أهلًا بيك! أقدر أساعدك في خدمات الدفع والبرمجيات أو أوصّلك لأي صفحة في الموقع." };
   }
@@ -129,6 +228,133 @@ function answerQuestion(rawQuestion: string): Omit<ChatMessage, "role"> | null {
       "تمام، نورتني 🌿 لو حابب تسأل عن أي خدمة أنا معاك.",
     ];
     return { content: acknowledgements[Math.floor(Math.random() * acknowledgements.length)] };
+  }
+
+  const asksWhoManagement =
+    matchesAny(question, ["من هم", "مين", "اسماء", "اعضاء", "من في", "who are"]) &&
+    matchesAny(question, ["اداره", "الاداره", "مجلس", "قياده", "مديرين", "الشركه"]);
+  if (asksWhoManagement) {
+    return {
+      content: "أعضاء إدارة الشركة وأرقام التواصل المنشورة على الموقع:",
+      details: teamMembers.map((member) => ({
+        title: member.name,
+        description: `${member.position} · رقم التواصل: ${member.phone}`,
+      })),
+      links: [{
+        label: "التواصل مع إدارة الشركة على واتساب",
+        href: teamMembers[0].whatsapp,
+        description: teamMembers[0].phone,
+      }],
+    };
+  }
+
+  const mentionedManager = teamMembers.find((member) =>
+    [member.name, ...member.nameAliases]
+      .some((name) => question.includes(normalizeArabic(name))),
+  );
+  if (
+    mentionedManager &&
+    matchesAny(question, ["رقم", "تليفون", "موبايل", "واتساب", "اتواصل", "تواصل مع"])
+  ) {
+    return {
+      content: `رقم التواصل المنشور لـ ${mentionedManager.name}، ${mentionedManager.position}، هو ${mentionedManager.phone}.`,
+      links: [{
+        label: `راسل ${mentionedManager.name} على واتساب`,
+        href: mentionedManager.whatsapp,
+        description: mentionedManager.phone,
+      }],
+    };
+  }
+
+  if (matchesAny(question, ["رئيس مجلس الاداره", "رئيس مجلس اداره", "رئيس مجلس", "رئيس المجلس", "chairman", "عماد ابوليله"])) {
+    if (matchesAny(question, ["رقم", "تليفون", "موبايل", "واتساب", "اتواصل"])) {
+      return {
+        content: "رقم التواصل المنشور للمهندس عماد أبوليلة، رئيس مجلس الإدارة، هو 01100730060.",
+        links: [{
+          label: "راسل رئيس مجلس الإدارة على واتساب",
+          href: "https://wa.me/201100730060",
+          description: "01100730060",
+        }],
+      };
+    }
+
+    return {
+      content: "رئيس مجلس إدارة رؤية باي هو المهندس عماد أبوليلة، وفقًا لصفحة إدارة الشركة على الموقع.",
+      links: [{ label: "عرض صفحة إدارة الشركة", href: "/team", description: "أعضاء الإدارة وبيانات التواصل" }],
+    };
+  }
+
+  if (matchesAny(question, ["العضو المنتدب", "بلال زيدان"])) {
+    return {
+      content: "المهندس بلال زيدان هو العضو المنتدب لرؤية باي، وفقًا لصفحة إدارة الشركة على الموقع.",
+      links: [{ label: "عرض صفحة إدارة الشركة", href: "/team", description: "أعضاء الإدارة وبيانات التواصل" }],
+    };
+  }
+
+  const mentionedDevelopers = developers.filter((developer) =>
+    [developer.name, ...developer.nameAliases]
+      .some((name) => question.includes(normalizeArabic(name))),
+  );
+  const asksForDeveloperContact = matchesAny(question, ["رقم", "ارقام", "تليفون", "موبايل", "واتساب", "اتواصل", "تواصل مع"]);
+  const asksForAllDeveloperContacts = matchesAny(question, [
+    "الاربع", "الاربعه", "كل", "جميع", "كلهم", "فريق التطوير", "المبرمجين", "مبرمجين", "المطورين", "مطورين", "developers",
+  ]);
+  const requestedDevelopers = mentionedDevelopers.length > 0
+    ? mentionedDevelopers
+    : asksForAllDeveloperContacts ? developers : [];
+
+  if (asksForDeveloperContact && requestedDevelopers.length > 0) {
+    const contacts = requestedDevelopers.map((developer) => {
+      const internationalNumber = developer.social.whatsapp.match(/wa\.me\/(\d+)/)?.[1] ?? "";
+      const localNumber = internationalNumber.replace(/^20/, "0");
+      const name = developer.name.replace("Eng / ", "");
+      return { developer, name, localNumber };
+    });
+
+    return {
+      content: contacts.length === 1
+        ? `رقم واتساب ${contacts[0].name} المنشور على صفحة المطورين هو ${contacts[0].localNumber}.`
+        : "دي أرقام واتساب المطورين المنشورة على الموقع:",
+      details: contacts.map(({ name, localNumber, developer }) => ({
+        title: `${name} — ${localNumber}`,
+        description: developer.role,
+      })),
+      links: contacts.map(({ name, localNumber, developer }) => ({
+        label: `راسل ${name} على واتساب`,
+        href: developer.social.whatsapp,
+        description: localNumber,
+      })),
+    };
+  }
+
+  const asksWhoDevelopers =
+    matchesAny(question, ["مين", "من هم", "من هما", "اسماء", "who are"]) &&
+    matchesAny(question, ["مطور", "مبرمج", "developer", "developers"]);
+  if (asksWhoDevelopers) {
+    return {
+      content: "أسماء فريق التطوير وتخصصاتهم المنشورة على الموقع:",
+      details: developers.map((developer) => ({
+        title: developer.name,
+        description: developer.role,
+      })),
+      links: [{ label: "عرض صفحة المطورين", href: "/developers", description: "ملفات فريق التطوير" }],
+    };
+  }
+
+  const siteResults = await searchWebsite(rawQuestion);
+  if (siteResults.length > 0) {
+    return {
+      content: "بحثت في صفحات الموقع، ودي المعلومات المرتبطة بسؤالك:",
+      details: siteResults.map(({ title, text }) => ({
+        title,
+        description: text.length > 260 ? `${text.slice(0, 257).trim()}…` : text,
+      })),
+      links: siteResults.map(({ path, title }) => ({
+        label: `افتح ${title}`,
+        href: path,
+        description: "المصدر من صفحات الموقع",
+      })),
+    };
   }
 
   const asksAboutCompany = matchesAny(question, ["ما هي شركه", "ماهي شركه", "من هي شركه", "من هي رؤيه", "من نحن", "عن الشركه", "رؤيه باي"]);
@@ -204,6 +430,9 @@ function answerQuestion(rawQuestion: string): Omit<ChatMessage, "role"> | null {
     const destination = destinations.find(({ terms }) => matchesAny(question, terms));
     if (destination) return { content: destination.answer, links: [destination.link] };
   }
+
+  const siteFaqAnswer = findSiteFaqAnswer(rawQuestion);
+  if (siteFaqAnswer) return siteFaqAnswer;
 
   if (matchesAny(question, ["سعر", "اسعار", "تكلفه", "بكام", "كام", "عرض سعر", "التكلفه"])) {
     return {
@@ -372,6 +601,36 @@ export default function RoayaAssistant() {
   } | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const endRef = useRef<HTMLDivElement>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+
+  const playChatSound = (kind: "send" | "reply") => {
+    try {
+      if (!("AudioContext" in window)) return;
+
+      const audioContext = audioContextRef.current ?? new window.AudioContext();
+      audioContextRef.current = audioContext;
+      if (audioContext.state === "suspended") void audioContext.resume().catch(() => undefined);
+
+      const notes = kind === "send" ? [740] : [660, 880];
+      const startAt = audioContext.currentTime;
+      notes.forEach((frequency, index) => {
+        const start = startAt + index * 0.11;
+        const oscillator = audioContext.createOscillator();
+        const volume = audioContext.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(frequency, start);
+        volume.gain.setValueAtTime(0.0001, start);
+        volume.gain.exponentialRampToValueAtTime(0.035, start + 0.015);
+        volume.gain.exponentialRampToValueAtTime(0.0001, start + 0.16);
+        oscillator.connect(volume);
+        volume.connect(audioContext.destination);
+        oscillator.start(start);
+        oscillator.stop(start + 0.17);
+      });
+    } catch {
+      // Audio is optional; browser restrictions should never interrupt chat.
+    }
+  };
 
   useEffect(() => {
     setDragOffset({ x: 0, y: 0 });
@@ -451,16 +710,31 @@ export default function RoayaAssistant() {
     const cleanContent = content.trim();
     if (!cleanContent || isSending) return;
 
+    playChatSound("send");
     setMessages((current) => [...current, { role: "user", content: cleanContent }]);
     setDraft("");
     setIsSending(true);
 
-    window.setTimeout(() => {
-      const reply = answerQuestion(cleanContent);
-      if (reply) {
-        setMessages((current) => [...current, { role: "assistant", ...reply }]);
+    window.setTimeout(async () => {
+      try {
+        const reply = await answerQuestion(cleanContent);
+        setMessages((current) => [...current, {
+          role: "assistant",
+          ...(reply ?? {
+            content: "ملقتش إجابة واضحة في صفحات الموقع عن السؤال ده. جرّب تكتبه بكلمات مختلفة أو تواصل مع فريق رؤية باي.",
+            links: [{ label: "تواصل مع فريق رؤية باي", href: "/contactUs", description: "للاستفسارات" }],
+          }),
+        }]);
+      } catch {
+        setMessages((current) => [...current, {
+          role: "assistant",
+          content: "مقدرتش أوصل لصفحات الموقع دلوقتي. جرّب تاني بعد شوية، أو تواصل مع الفريق.",
+          links: [{ label: "تواصل مع فريق رؤية باي", href: "/contactUs", description: "للاستفسارات" }],
+        }]);
+      } finally {
+        playChatSound("reply");
+        setIsSending(false);
       }
-      setIsSending(false);
     }, 420);
   };
 
@@ -517,7 +791,7 @@ export default function RoayaAssistant() {
                 {message.role === "assistant" && (
                   <div className="roaya-chat-message-brand"><Sparkles size={13} aria-hidden="true" /><span>المساعد الذكي</span></div>
                 )}
-                <p>{message.content}</p>
+                <p>{message.content}{message.role === "assistant" ? " 😊" : ""}</p>
                 {message.details && (
                   <div className="roaya-chat-details">
                     {message.details.map((detail, detailIndex) => (
@@ -582,7 +856,6 @@ export default function RoayaAssistant() {
               onKeyDown={handleInputKeyDown}
               placeholder="اكتب سؤالك هنا..."
               maxLength={1200}
-              disabled={isSending}
               autoComplete="off"
             />
             <button
